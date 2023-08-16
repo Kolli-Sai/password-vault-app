@@ -39,39 +39,26 @@ const SignInForm = () => {
     SignInUser,
     {
       onSuccess: (data) => {
-        console.log(`onsuccess`, data);
-        if (data.token) {
-          // Assuming your server returns a 'success' flag
-          toast({
-            title: "Signed In",
-            description: "You have successfully signed in.",
-          });
-          localStorage.setItem("token", data.token);
-          navigate("/dashboard");
-          setUser(true);
-
-          console.log("data", data);
-        } else {
-          // Handle unsuccessful login attempt (maybe display an error toast)
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: data.response.data.error,
-          });
-        }
+        console.log(`onSuccess`, data);
+        toast({
+          title: "Signed In",
+          description: "You have successfully signed in.",
+        });
+        localStorage.setItem("token", data.token);
+        navigate("/dashboard");
+        setUser(true);
       },
 
       onError: (error) => {
-        console.log("error", error);
+        console.log(`onError`, error);
         toast({
+          variant: "destructive",
           title: "Error",
           description: error.message,
         });
       },
     }
   );
-
-  console.log("Loggedin data", data);
 
   const onSubmit = (data) => {
     mutate({ obj: data });

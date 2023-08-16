@@ -1,13 +1,13 @@
-/* eslint-disable no-unused-vars */
 import { Api } from "../../Api";
 
 export const SignInUser = async ({ obj }) => {
   try {
-    const data = await Api.post("/auth/login", obj);
-    console.log(data);
+    const response = await Api.post("/auth/login", obj);
+    console.log(`response from utils`, response.data);
 
-    return data.data;
+    return response.data;
   } catch (error) {
-    return error;
+    console.log(`error from utils`, error);
+    throw new Error(error.response.data.error || error.message); // Throw a custom error message
   }
 };
