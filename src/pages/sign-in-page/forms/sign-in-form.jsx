@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -34,8 +35,41 @@ const SignInForm = () => {
   const { errors, isDirty, isValid, isSubmitSuccessful, isSubmitting } =
     formState;
 
-  const { mutate, isError, error, isLoading, data, isSuccess } =
-    useMutation(SignInUser);
+  const { mutate, isError, error, isLoading, data, isSuccess } = useMutation(
+    SignInUser,
+    {
+      onSuccess: (data) => {
+        console.log(`onsuccess`, data);
+        if (data.token) {
+          // Assuming your server returns a 'success' flag
+          toast({
+            title: "Signed In",
+            description: "You have successfully signed in.",
+          });
+          localStorage.setItem("token", data.token);
+          navigate("/dashboard");
+          setUser(true);
+
+          console.log("data", data);
+        } else {
+          // Handle unsuccessful login attempt (maybe display an error toast)
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: data.response.data.error,
+          });
+        }
+      },
+
+      onError: (error) => {
+        console.log("error", error);
+        toast({
+          title: "Error",
+          description: error.message,
+        });
+      },
+    }
+  );
 
   console.log("Loggedin data", data);
 
@@ -45,27 +79,6 @@ const SignInForm = () => {
   };
 
   console.log("isSuccess", isSuccess);
-  useEffect(() => {
-    if (isSuccess) {
-      console.log("toast called");
-      toast({
-        title: "Signed In",
-        description: "You have successfully signed in.",
-      });
-      localStorage.setItem("token", data.token);
-      navigate("/dashboard");
-      setUser(true);
-    }
-  }, [isSuccess, toast]);
-
-  useEffect(() => {
-    if (isError && error) {
-      toast({
-        title: "Error",
-        description: error.message,
-      });
-    }
-  }, [isError, error, toast]);
 
   const onError = (errors, e) => {
     console.log(errors, e);
